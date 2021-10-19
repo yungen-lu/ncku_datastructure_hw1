@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <stack>
+#include <string>
 int counter = 0;
 struct item {
   int x;
@@ -117,11 +118,11 @@ int main() {
   return 0;
 }
 void convertCharToInt(std::ifstream &fileBuffer, bool (&maze)[17][17]) {
-  char buffer[18] = {0};
+  // char buffer[18] = {0};
+  std::string buffer;
   int x = 0;
-  while (fileBuffer.getline(buffer, sizeof(buffer))) {
-    // fileBuffer.getline(buffer, sizeof(buffer));
-    for (int i = 0; i < 17; i++) {
+  while (std::getline(fileBuffer, buffer)) {
+    for (int i = 0; i < buffer.size(); i++) {
       if (buffer[i] == '1') {
         maze[x][i] = true;
       }

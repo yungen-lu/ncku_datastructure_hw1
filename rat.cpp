@@ -9,11 +9,80 @@ struct item {
   item(int x, int y) : x(x), y(y), dir(0){};
   item(int x, int y, int dir) : x(x), y(y), dir(dir){};
 };
+bool getNextPath(int dir, int &x, int &y);
+class Solution {
+public:
+  Solution(int (&maze)[17][17]) : maze(maze) {}
+  Solution(int (&maze)[17][17], int startPosX, int startPosY, int exitPosX,
+           int exitPosY)
+      : maze(maze), startPosX(startPosX), startPosY(startPosY),
+        exitPosX(exitPosX), exitPosY(exitPosY) {}
+  Solution(int (&maze)[17][17], int exitPosX, int exitPosY)
+      : maze(maze), startPosX(1), startPosY(1), exitPosX(exitPosX),
+        exitPosY(exitPosY) {}
+  //   Solution() = default;
+  //   Solution(Solution &&) = default;
+  //   Solution(const Solution &) = default;
+  //   Solution &operator=(Solution &&) = default;
+  //   Solution &operator=(const Solution &) = default;
+  //   ~Solution() = default;
+
+  bool sol(int startPosX, int startPosY, int exitPosX, int exitPosY) {
+    int mark[17][17] = {{0}};
+    this->counter = 0;
+    std::stack<item> stack;
+    item first(startPosX, startPosY);
+    stack.push(first);
+    mark[startPosX][startPosY] = 1;
+    while (!stack.empty()) {
+      item top = stack.top();
+      stack.pop();
+      int i = top.x, j = top.y, d = top.dir;
+      while (d < 4) {
+        int nextX = i;
+        int nextY = j;
+        getNextPath(d, nextX, nextY);
+        if (nextX == exitPosX && nextY == exitPosY) {
+          std::cout << counter++ << ':' << i << ',' << j << std::endl;
+          std::cout << counter++ << ':' << nextX << ',' << nextY << std::endl;
+          std::cout << "successfully escaped!!" << std::endl;
+
+          return true;
+        }
+        if (!maze[nextX][nextY] && !mark[nextX][nextY]) {
+          mark[nextX][nextY] = 1;
+          top.x = i;
+          top.y = j;
+          top.dir = d + 1;
+          stack.push(top);
+          i = nextX;
+          j = nextY;
+          d = 0;
+          print(top);
+        } else {
+          d++;
+        }
+      }
+      print(top);
+    }
+    std::cout << "Failed to escape." << std::endl;
+    return false;
+  }
+
+private:
+  int counter;
+  int (&maze)[17][17];
+  int startPosX, startPosY, exitPosX, exitPosY;
+  void print(item tmp) {
+    std::cout << counter++ << ':' << tmp.x << ',' << tmp.y << std::endl;
+  }
+};
+
 void convertCharToInt(std::ifstream &fileBuffer, int (&maze)[17][17]);
 void printMaze(int (&maze)[17][17]);
-bool sol(int (&maze)[17][17], int startPosX, int startPosY, int exitPosX,
-         int exitPosY);
-bool getNextPath(int &startX, int &startY, int &endX, int &endY);
+// bool sol(int (&maze)[17][17], int startPosX, int startPosY, int exitPosX,
+// int exitPosY);
+// bool getNextPath(int &startX, int &startY, int &endX, int &endY);
 void print(item tmp);
 int main() {
   // std::string fileName = "maze.txt";
@@ -44,7 +113,9 @@ int main() {
         std::cerr << "unvalid position" << std::endl;
         return 1;
       }
-      sol(maze, startPosX, startPosY, exitPosX, exitPosY);
+      Solution sol(maze);
+      sol.sol(startPosX, startPosY, exitPosX, exitPosY);
+      // sol(maze, startPosX, startPosY, exitPosX, exitPosY);
     }
   } else {
     std::cerr << "can't open file name" << fileName << std::endl;

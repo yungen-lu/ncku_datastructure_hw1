@@ -26,22 +26,26 @@ int main() {
   if (fileBuffer.is_open()) {
     convertCharToInt(fileBuffer, maze);
     printMaze(maze);
-    int startPosX, startPosY, exitPosX, exitPosY;
-    std::cout << "enter start position : ";
-    std::cin >> startPosX >> startPosY;
-    if (maze[startPosX][startPosY]) {
-      std::cerr << "unvalid position" << std::endl;
-      return 1;
+    while (true) {
+      int startPosX, startPosY, exitPosX, exitPosY;
+      std::cout << "enter start position : ";
+      std::cin >> startPosX >> startPosY;
+      if (startPosX == -1 && startPosY == -1) {
+        std::cout << "end the code." << std::endl;
+        return 0;
+      }
+      if (maze[startPosX][startPosY]) {
+        std::cerr << "unvalid position" << std::endl;
+        return 1;
+      }
+      std::cout << "enter exit position : ";
+      std::cin >> exitPosX >> exitPosY;
+      if (maze[exitPosX][exitPosY]) {
+        std::cerr << "unvalid position" << std::endl;
+        return 1;
+      }
+      sol(maze, startPosX, startPosY, exitPosX, exitPosY);
     }
-    std::cout << "enter exit position : ";
-    std::cin >> exitPosX >> exitPosY;
-    if (maze[exitPosX][exitPosY]) {
-      std::cerr << "unvalid position" << std::endl;
-      return 1;
-    }
-
-    std::cout << sol(maze, startPosX, startPosY, exitPosX, exitPosY)
-              << std::endl;
   } else {
     std::cerr << "can't open file name" << fileName << std::endl;
     return 1;
@@ -106,6 +110,7 @@ bool sol(int (&maze)[17][17], int startPosX, int startPosY, int exitPosX,
       if (nextX == exitPosX && nextY == exitPosY) {
         std::cout << counter++ << ':' << i << ',' << j << std::endl;
         std::cout << counter++ << ':' << nextX << ',' << nextY << std::endl;
+        std::cout << "successfully escaped!!" << std::endl;
 
         return true;
       }
@@ -125,6 +130,7 @@ bool sol(int (&maze)[17][17], int startPosX, int startPosY, int exitPosX,
     }
     print(top);
   }
+  std::cout << "Failed to escape." << std::endl;
   return false;
 }
 void print(item tmp) {

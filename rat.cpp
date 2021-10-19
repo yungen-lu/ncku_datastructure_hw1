@@ -12,7 +12,7 @@ struct item {
 bool getNextPath(int dir, int &x, int &y);
 class Solution {
 public:
-  Solution(int (&maze)[17][17]) : maze(maze) {}
+  Solution(bool (&maze)[17][17]) : maze(maze) {}
   //   Solution() = default;
   //   Solution(Solution &&) = default;
   //   Solution(const Solution &) = default;
@@ -21,7 +21,7 @@ public:
   //   ~Solution() = default;
 
   bool sol(int startPosX, int startPosY, int exitPosX, int exitPosY) {
-    int mark[17][17] = {{0}};
+    bool mark[17][17] = {{false}};
     this->counter = 0;
     std::stack<item> stack;
     item first(startPosX, startPosY);
@@ -43,7 +43,7 @@ public:
           return true;
         }
         if (!maze[nextX][nextY] && !mark[nextX][nextY]) {
-          mark[nextX][nextY] = 1;
+          mark[nextX][nextY] = true;
           top.x = i;
           top.y = j;
           top.dir = d + 1;
@@ -64,15 +64,15 @@ public:
 
 private:
   int counter;
-  int (&maze)[17][17];
+  bool (&maze)[17][17];
   // int startPosX, startPosY, exitPosX, exitPosY;
   void print(item tmp) {
     std::cout << counter++ << ':' << tmp.x << ',' << tmp.y << std::endl;
   }
 };
 
-void convertCharToInt(std::ifstream &fileBuffer, int (&maze)[17][17]);
-void printMaze(int (&maze)[17][17]);
+void convertCharToInt(std::ifstream &fileBuffer, bool (&maze)[17][17]);
+void printMaze(bool (&maze)[17][17]);
 // bool sol(int (&maze)[17][17], int startPosX, int startPosY, int exitPosX,
 // int exitPosY);
 // bool getNextPath(int &startX, int &startY, int &endX, int &endY);
@@ -84,7 +84,7 @@ int main() {
   std::cin >> fileName;
   std::ifstream fileBuffer;
   fileBuffer.open(fileName);
-  int maze[17][17] = {{0}};
+  bool maze[17][17] = {{false}};
   if (fileBuffer.is_open()) {
     convertCharToInt(fileBuffer, maze);
     printMaze(maze);
@@ -116,21 +116,21 @@ int main() {
   }
   return 0;
 }
-void convertCharToInt(std::ifstream &fileBuffer, int (&maze)[17][17]) {
+void convertCharToInt(std::ifstream &fileBuffer, bool (&maze)[17][17]) {
   char buffer[18] = {0};
   int x = 0;
   while (fileBuffer.getline(buffer, sizeof(buffer))) {
     // fileBuffer.getline(buffer, sizeof(buffer));
     for (int i = 0; i < 17; i++) {
       if (buffer[i] == '1') {
-        maze[x][i] = 1;
+        maze[x][i] = true;
       }
     }
     x++;
   }
   fileBuffer.close();
 }
-void printMaze(int (&maze)[17][17]) {
+void printMaze(bool (&maze)[17][17]) {
   for (int i = 0; i < 17; i++) {
     for (int j = 0; j < 17; j++) {
       std::cout << maze[i][j];
@@ -155,47 +155,6 @@ bool getNextPath(int dir, int &x, int &y) {
   default:
     return false;
   }
-}
-bool sol(int (&maze)[17][17], int startPosX, int startPosY, int exitPosX,
-         int exitPosY) {
-  int mark[17][17] = {{0}};
-  std::stack<item> stack;
-  item first(startPosX, startPosY);
-  stack.push(first);
-  mark[startPosX][startPosY] = 1;
-  while (!stack.empty()) {
-    item top = stack.top();
-    stack.pop();
-    int i = top.x, j = top.y, d = top.dir;
-    while (d < 4) {
-      int nextX = i;
-      int nextY = j;
-      getNextPath(d, nextX, nextY);
-      if (nextX == exitPosX && nextY == exitPosY) {
-        std::cout << counter++ << ':' << i << ',' << j << std::endl;
-        std::cout << counter++ << ':' << nextX << ',' << nextY << std::endl;
-        std::cout << "successfully escaped!!" << std::endl;
-
-        return true;
-      }
-      if (!maze[nextX][nextY] && !mark[nextX][nextY]) {
-        mark[nextX][nextY] = 1;
-        top.x = i;
-        top.y = j;
-        top.dir = d + 1;
-        stack.push(top);
-        i = nextX;
-        j = nextY;
-        d = 0;
-        print(top);
-      } else {
-        d++;
-      }
-    }
-    print(top);
-  }
-  std::cout << "Failed to escape." << std::endl;
-  return false;
 }
 void print(item tmp) {
   std::cout << counter++ << ':' << tmp.x << ',' << tmp.y << std::endl;

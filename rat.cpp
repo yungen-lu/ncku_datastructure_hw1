@@ -13,13 +13,6 @@ bool getNextPath(int dir, int &x, int &y);
 class Solution {
 public:
   Solution(int (&maze)[17][17]) : maze(maze) {}
-  Solution(int (&maze)[17][17], int startPosX, int startPosY, int exitPosX,
-           int exitPosY)
-      : maze(maze), startPosX(startPosX), startPosY(startPosY),
-        exitPosX(exitPosX), exitPosY(exitPosY) {}
-  Solution(int (&maze)[17][17], int exitPosX, int exitPosY)
-      : maze(maze), startPosX(1), startPosY(1), exitPosX(exitPosX),
-        exitPosY(exitPosY) {}
   //   Solution() = default;
   //   Solution(Solution &&) = default;
   //   Solution(const Solution &) = default;
@@ -72,7 +65,7 @@ public:
 private:
   int counter;
   int (&maze)[17][17];
-  int startPosX, startPosY, exitPosX, exitPosY;
+  // int startPosX, startPosY, exitPosX, exitPosY;
   void print(item tmp) {
     std::cout << counter++ << ':' << tmp.x << ',' << tmp.y << std::endl;
   }

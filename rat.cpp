@@ -14,12 +14,6 @@ bool getNextPath(int dir, int &x, int &y);
 class Solution {
 public:
   Solution(bool (&maze)[17][17]) : maze(maze) {}
-  //   Solution() = default;
-  //   Solution(Solution &&) = default;
-  //   Solution(const Solution &) = default;
-  //   Solution &operator=(Solution &&) = default;
-  //   Solution &operator=(const Solution &) = default;
-  //   ~Solution() = default;
 
   bool sol(int startPosX, int startPosY, int exitPosX, int exitPosY) {
     bool mark[17][17] = {{false}};
@@ -66,7 +60,6 @@ public:
 private:
   int counter;
   bool (&maze)[17][17];
-  // int startPosX, startPosY, exitPosX, exitPosY;
   void print(item tmp) {
     std::cout << counter++ << ':' << tmp.x << ',' << tmp.y << std::endl;
   }
@@ -80,7 +73,6 @@ public:
   }
   void openAndConvert() {
     fileBuffer.open(fileName);
-    // bool maze[17][17] = {{false}};
     if (fileBuffer.is_open()) {
       convertStringToInt();
       printMaze(maze);
@@ -116,24 +108,11 @@ private:
 };
 void convertCharToInt(std::ifstream &fileBuffer, bool (&maze)[17][17]);
 void printMaze(bool (&maze)[17][17]);
-// bool sol(int (&maze)[17][17], int startPosX, int startPosY, int exitPosX,
-// int exitPosY);
-// bool getNextPath(int &startX, int &startY, int &endX, int &endY);
 void print(item tmp);
 int main() {
-  // std::string fileName = "maze.txt";
-  // std::string fileName;
-  // std::cout << "enter filename : ";
-  // std::cin >> fileName;
-  // std::ifstream fileBuffer;
-  // fileBuffer.open(fileName);
-  // bool maze[17][17] = {{false}};
   FileIO test;
   test.getFileName();
   test.openAndConvert();
-  // if (fileBuffer.is_open()) {
-  //   convertCharToInt(fileBuffer, maze);
-  //   printMaze(maze);
   while (true) {
     int startPosX, startPosY, exitPosX, exitPosY;
     std::cout << "enter start position : ";
@@ -158,17 +137,10 @@ int main() {
     }
     Solution sol(test.maze);
     sol.sol(startPosX, startPosY, exitPosX, exitPosY);
-    // sol(maze, startPosX, startPosY, exitPosX, exitPosY);
   }
-  // }
-  // else {
-  //   std::cerr << "can't open file name" << fileName << std::endl;
-  //   return 1;
-  // }
   return 0;
 }
 void convertCharToInt(std::ifstream &fileBuffer, bool (&maze)[17][17]) {
-  // char buffer[18] = {0};
   std::string buffer;
   int x = 0;
   while (std::getline(fileBuffer, buffer)) {

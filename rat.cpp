@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <stack>
+#include <stdexcept>
 #include <string>
 int counter = 0;
 struct item {
@@ -66,6 +67,7 @@ private:
 };
 class FileIO {
 public:
+  FileIO() { getFileName(); }
   bool maze[17][17] = {{false}};
   void getFileName() {
     std::cout << "enter filename : ";
@@ -74,10 +76,17 @@ public:
   void openAndConvert() {
     fileBuffer.open(fileName);
     if (fileBuffer.is_open()) {
-      convertStringToInt();
+      try {
+        convertStringToInt();
+      } catch (const std::length_error &e) {
+        std::cout << e.what() << std::endl;
+      }
+      // convertStringToInt();
       printMaze(maze);
     } else {
-      std::cerr << "can't open file name" << fileName << std::endl;
+      std::cerr << "can't open file name : " << fileName << std::endl;
+      fileBuffer.close();
+      getFileName();
     }
     fileBuffer.close();
   }
@@ -85,7 +94,11 @@ public:
     std::string buffer;
     int x = 0;
     while (std::getline(fileBuffer, buffer)) {
-      for (int i = 0; i < buffer.size(); i++) {
+      if (buffer.size() > 17) {
+        throw std::length_error("line length is larger than 17 char");
+        continue;
+      }
+      for (size_t i = 0; i < buffer.size(); i++) {
         if (buffer[i] == '1') {
           maze[x][i] = true;
         }
@@ -106,12 +119,11 @@ private:
   std::string fileName;
   std::ifstream fileBuffer;
 };
-void convertCharToInt(std::ifstream &fileBuffer, bool (&maze)[17][17]);
-void printMaze(bool (&maze)[17][17]);
-void print(item tmp);
+// void convertCharToInt(std::ifstream &fileBuffer, bool (&maze)[17][17]);
+// void printMaze(bool (&maze)[17][17]);
+// void print(item tmp);
 int main() {
   FileIO test;
-  test.getFileName();
   test.openAndConvert();
   while (true) {
     int startPosX, startPosY, exitPosX, exitPosY;
@@ -144,7 +156,7 @@ void convertCharToInt(std::ifstream &fileBuffer, bool (&maze)[17][17]) {
   std::string buffer;
   int x = 0;
   while (std::getline(fileBuffer, buffer)) {
-    for (int i = 0; i < buffer.size(); i++) {
+    for (size_t i = 0; i < buffer.size(); i++) {
       if (buffer[i] == '1') {
         maze[x][i] = true;
       }

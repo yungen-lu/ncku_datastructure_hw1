@@ -173,7 +173,7 @@ int main() {
   FileIO mazeFile;
   mazeFile.openAndConvert(); // open the file and try to convert it to 2d array
                              // of bool
-  while (true) {
+  while (!std::cin.eof()) {
     int startPosX, startPosY, exitPosX, exitPosY;
     std::cout << "enter start position : ";
     std::cin >> startPosX >> startPosY;

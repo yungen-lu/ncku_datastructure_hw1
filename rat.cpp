@@ -85,9 +85,7 @@ public:
     return;
   }
 
-private:
   int counter = 0;
-  // bool (&maze)[17][17];
   std::array<std::array<bool, 17>, 17> maze;
   bool getNextPath(int dir, int &x,
                    int &y) const { // change x,y depend on var "dir"
@@ -117,8 +115,7 @@ private:
 class FileIO {
 public:
   FileIO() { getFileName(); } // try to get the filename at initialize
-  // bool maze[17][17] = {
-  //  {false}}; // create a 17x17 array and initialize as false at all position
+  // create a 17x17 array and initialize as false at all position
   std::array<std::array<bool, 17>, 17> maze = {{false}};
 
   void openAndConvert() {
@@ -140,7 +137,6 @@ public:
     fileBuffer.close();
   }
 
-private:
   void getFileName() {
     std::cout << "enter filename : ";
     std::cin >> fileName;

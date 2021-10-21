@@ -16,12 +16,16 @@ class Solution {
  public:
   explicit Solution(std::array<std::array<bool, 17>, 17> &maze) : maze(maze) {}  // pass in a 2d array to initialize
 
+  /**
+   * this function is the main algo that will try all path in the maze
+   * @param startPosX,startPosY .... the starting and ending position of the rat
+   */
   void sol(int startPosX, int startPosY, int exitPosX, int exitPosY) {
     std::array<std::array<bool, 17>, 17> mark = {{false}};
     // create a 17x17 bool array and initialize
     // as false at all position
     // this indicates wheather the rat have been there or not
-    counter = 0;
+    counter = 0;                       // counter that counts the step of the rat
     std::stack<item> stackOfItem;      // create a stack of struct item
     item first(startPosX, startPosY);  // create a struct item with x,y position
     stackOfItem.push(first);
@@ -77,6 +81,12 @@ class Solution {
 
   int counter = 0;
   std::array<std::array<bool, 17>, 17> maze;
+  /**
+   * change the position according var dir
+   * @param dir the direction of the next path
+   * @param x,y the position that will be changed to the next position
+   * @return return false when the dir is invalid
+   */
   bool getNextPath(int dir, int &x,
                    int &y) const {  // change x,y depend on var "dir"
     switch (dir) {
@@ -97,6 +107,10 @@ class Solution {
     }
   }
 
+  /**
+   * print out the struct item whith the format of "counter:x,y\n"
+   * @param tmp the struct item that will be printed out
+   */
   void printStruct(item tmp) {
     std::cout << counter << ':' << tmp.x << ',' << tmp.y << std::endl;
     counter++;
@@ -108,6 +122,9 @@ class FileIO {
   // create a 17x17 array and initialize as false at all position
   std::array<std::array<bool, 17>, 17> maze = {{false}};
 
+  /**
+   * tries to open the file with the filename that was been retrieved when initializing the class object
+   */
   void openAndConvert() {
     fileBuffer.open(fileName);
     if (fileBuffer.is_open()) {
@@ -126,6 +143,10 @@ class FileIO {
     fileBuffer.close();
   }
 
+  /**
+   * tries to get the file name
+   * @throws throw an exception when user enter EOF
+   */
   void getFileName() {
     std::cout << "enter filename : ";
     std::cin >> fileName;
@@ -133,6 +154,11 @@ class FileIO {
       throw std::invalid_argument("EOF entered");
     }
   }
+  /**
+   * convert the file to 2d array line by line
+   * @throws  when the line is more than 17 char, throw an exception
+   * @throws when there more than 17 lines, throw an exception
+   */
   void convertStringToBool() {
     std::string stringBuffer;
     int row = 0;
@@ -148,13 +174,15 @@ class FileIO {
       for (size_t i = 0; i < stringBuffer.size(); i++) {
         if (stringBuffer.at(i) == '1') {  // if the char at position i in the line
                                           // is '1' then change maze[row][i] to true
-          // maze[row][i] = true;
           maze.at(row).at(i) = true;
         }
       }
       row++;
     }
   }
+  /**
+   * print the 17x17 maze
+   */
   void printMaze() const {
     for (int i = 0; i < 17; i++) {
       for (int j = 0; j < 17; j++) {
@@ -177,7 +205,7 @@ int main() {
     int exitPosY;
     std::cout << "enter start position : ";
     std::cin >> startPosX >> startPosY;
-    if (std::cin.fail()) {
+    if (std::cin.fail()) {  // if user enter a invalid value e.g "a b" or "1.1 2.2" clear the input buffer
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       std::cerr << "entered invalid" << std::endl;
@@ -189,8 +217,8 @@ int main() {
     }
     std::array<std::array<bool, 17>, 17> &maze = mazeFile.maze;
     if (maze.at(startPosX).at(startPosY)) {  // check the entered position is valid or
-                                             // not e.g can not start from a wall
-      std::cerr << "unvalid position" << std::endl;
+                                             // not e.g can not start from a barrier
+      std::cerr << "invalid position" << std::endl;
       continue;
     }
     std::cout << "enter exit position : ";
@@ -207,8 +235,8 @@ int main() {
       break;
     }
     if (maze.at(exitPosX).at(exitPosY)) {  // check the entered position is valid
-                                           // or not e.g can not end at a wall
-      std::cerr << "unvalid position" << std::endl;
+                                           // or not e.g can not end at a barrier
+      std::cerr << "invalid position" << std::endl;
       continue;
     }
     Solution sol(maze);  // pass in the maze to solution object

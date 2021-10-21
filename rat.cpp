@@ -3,56 +3,77 @@
 #include <stack>
 #include <stdexcept>
 #include <string>
-int counter = 0;
 struct item {
   int x;
   int y;
   int dir;
-  item(int x, int y) : x(x), y(y), dir(0){};
+  item(int x, int y)
+      : x(x), y(y),
+        dir(0){}; // struct item can be initialize with x,y and a optional dir
   item(int x, int y, int dir) : x(x), y(y), dir(dir){};
 };
 class Solution {
 public:
-  Solution(bool (&maze)[17][17]) : maze(maze) {}
+  Solution(bool (&maze)[17][17])
+      : maze(maze) {} // pass in a 2d array to initialize
 
   void sol(int startPosX, int startPosY, int exitPosX, int exitPosY) {
-    bool mark[17][17] = {{false}};
+    bool mark[17][17] = {
+        {false}}; // create a 17x17 bool array and initialize
+                  // as false at all position
+                  // this indicates wheather the rat have been there or not
     counter = 0;
-    std::stack<item> stackOfItem;
-    item first(startPosX, startPosY);
+    std::stack<item> stackOfItem;     // create a stack of struct item
+    item first(startPosX, startPosY); // create a struct item with x,y position
     stackOfItem.push(first);
-    mark[startPosX][startPosY] = 1;
+    mark[startPosX][startPosY] =
+        true; // mark start position as true on the mark 2d array
     while (!stackOfItem.empty()) {
       item top = stackOfItem.top();
-      stackOfItem.pop();
+      stackOfItem
+          .pop(); // get the top item of the stack and delete it from the stack
       int currentX = top.x, currentY = top.y, d = top.dir;
       while (d < 4) {
         int nextX = currentX;
         int nextY = currentY;
-        getNextPath(d, nextX, nextY);
+        getNextPath(d, nextX,
+                    nextY); // let var nextX and nextY be the next position the
+                            // rat would go(depends on var d)
         if (nextX == exitPosX && nextY == exitPosY) {
-          std::cout << counter++ << ':' << currentX << ',' << currentY
+          std::cout
+              << counter++ << ':' << currentX << ','
+              << currentY // if the next position is the exit position, print
+                          // out the current position and the exit position
+              << std::endl;
+          std::cout << counter++ << ':' << exitPosX << ',' << exitPosY
                     << std::endl;
-          std::cout << counter++ << ':' << nextX << ',' << nextY << std::endl;
           std::cout << "successfully escaped!!" << std::endl;
 
           return;
         }
-        if (!maze[nextX][nextY] && !mark[nextX][nextY]) {
+        if (!maze[nextX][nextY] &&
+            !mark[nextX][nextY]) { // if the maze have no wall on nextX,nextY
+                                   // position and the rat have not been
+                                   // there(mark array is false)
           mark[nextX][nextY] = true;
           top.x = currentX;
           top.y = currentY;
-          top.dir = d + 1;
-          stackOfItem.push(top);
+          top.dir =
+              d + 1; // change struct item top with the current x,y and add 1 to
+                     // the var dir so that when we pop this item from the stack
+                     // next time, we will try a different dir
+          stackOfItem.push(top); // push top back to the stack
           currentX = nextX;
           currentY = nextY;
-          d = 0;
-          printStruct(top);
+          d = 0;            // reset current x,y as nextX,nextY
+          printStruct(top); // print current position when the rat is going to
+                            // try out a new path
         } else {
-          d++;
+          d++; // try a different dir
         }
       }
-      printStruct(top);
+      printStruct(top); // print path when the rat is moving backwards(from it's
+                        // last path)
     }
     std::cout << "Failed to escape." << std::endl;
     return;
@@ -61,7 +82,7 @@ public:
 private:
   int counter;
   bool (&maze)[17][17];
-  bool getNextPath(int dir, int &x, int &y) {
+  bool getNextPath(int dir, int &x, int &y) { // change x,y depend on var "dir";
     switch (dir) {
     case 0:
       y++;
@@ -86,8 +107,10 @@ private:
 };
 class FileIO {
 public:
-  FileIO() { getFileName(); }
-  bool maze[17][17] = {{false}};
+  FileIO() { getFileName(); } // try to get the filename at initialize
+  bool maze[17][17] = {
+      {false}}; // create a 17x17 array and initialize as false at all position
+
   void getFileName() {
     std::cout << "enter filename : ";
     std::cin >> fileName;
@@ -96,32 +119,43 @@ public:
     fileBuffer.open(fileName);
     if (fileBuffer.is_open()) {
       try {
-        convertStringToBool();
+        convertStringToBool(); // convert the txt file to a 2d array of bool
       } catch (const std::length_error &e) {
-        std::cout << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
       }
       printMaze(maze);
     } else {
       std::cerr << "can't open file name : " << fileName << std::endl;
-      fileBuffer.close();
+      fileBuffer
+          .close(); // if can not open file get a new filename and try again
       getFileName();
+      openAndConvert();
     }
     fileBuffer.close();
   }
   void convertStringToBool() {
     std::string stringBuffer;
-    int x = 0;
+    int row = 0;
     while (std::getline(fileBuffer, stringBuffer)) {
+      if (row > 17) {
+        throw std::length_error(
+            "row length is larger than 17"); // throw error when row is larger
+                                             // than 17
+        break;
+      }
       if (stringBuffer.size() > 17) {
-        throw std::length_error("line length is larger than 17 char");
+        throw std::length_error(
+            "line length is larger than 17 char"); // throw error when line
+                                                   // length is larger than 17
         continue;
       }
       for (size_t i = 0; i < stringBuffer.size(); i++) {
-        if (stringBuffer[i] == '1') {
-          maze[x][i] = true;
+        if (stringBuffer[i] == '1') { // if the char at position i in the line
+                                      // is '1' then change maze[row][i] to true
+          maze[row][i] = true;
         }
       }
-      x++;
+      row++;
     }
   }
   void printMaze(bool (&maze)[17][17]) {
@@ -139,31 +173,39 @@ private:
 };
 int main() {
   FileIO mazeFile;
-  mazeFile.openAndConvert();
+  mazeFile.openAndConvert(); // open the file and try to convert it to 2d array
+                             // of bool
   while (true) {
     int startPosX, startPosY, exitPosX, exitPosY;
     std::cout << "enter start position : ";
     std::cin >> startPosX >> startPosY;
-    if (startPosX == -1 && startPosY == -1) {
+    if (startPosX == -1 &&
+        startPosY == -1) { // quit program when entered "-1 -1"
       std::cout << "end the code." << std::endl;
-      return 0;
+      break;
     }
-    if (mazeFile.maze[startPosX][startPosY]) {
+    if (mazeFile.maze[startPosX]
+                     [startPosY]) { // check the entered position is valid or
+                                    // not e.g can not start from a wall
       std::cerr << "unvalid position" << std::endl;
       continue;
     }
     std::cout << "enter exit position : ";
     std::cin >> exitPosX >> exitPosY;
-    if (startPosX == -1 && startPosY == -1) {
+    if (startPosX == -1 &&
+        startPosY == -1) { // quit program when entered "-1 -1"
       std::cout << "end the code." << std::endl;
-      return 0;
+      break;
     }
-    if (mazeFile.maze[exitPosX][exitPosY]) {
+    if (mazeFile
+            .maze[exitPosX][exitPosY]) { // check the entered position is valid
+                                         // or not e.g can not end at a wall
       std::cerr << "unvalid position" << std::endl;
       continue;
     }
-    Solution sol(mazeFile.maze);
-    sol.sol(startPosX, startPosY, exitPosX, exitPosY);
+    Solution sol(mazeFile.maze); // pass in the maze to solution object
+    sol.sol(startPosX, startPosY, exitPosX,
+            exitPosY); // try the entered positions
   }
   return 0;
 }

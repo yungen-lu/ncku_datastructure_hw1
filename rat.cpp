@@ -14,7 +14,7 @@ struct item {
 };
 class Solution {
 public:
-  Solution(bool (&maze)[17][17])
+  explicit Solution(bool (&maze)[17][17])
       : maze(maze) {} // pass in a 2d array to initialize
 
   void sol(int startPosX, int startPosY, int exitPosX, int exitPosY) {
@@ -32,7 +32,9 @@ public:
       item top = stackOfItem.top();
       stackOfItem
           .pop(); // get the top item of the stack and delete it from the stack
-      int currentX = top.x, currentY = top.y, d = top.dir;
+      int currentX = top.x;
+      int currentY = top.y;
+      int d = top.dir;
       while (d < 4) {
         int nextX = currentX;
         int nextY = currentY;
@@ -41,11 +43,12 @@ public:
                             // rat would go(depends on var d)
         if (nextX == exitPosX && nextY == exitPosY) {
           std::cout
-              << counter++ << ':' << currentX << ','
+              << counter << ':' << currentX << ','
               << currentY // if the next position is the exit position, print
                           // out the current position and the exit position
               << std::endl;
-          std::cout << counter++ << ':' << exitPosX << ',' << exitPosY
+          counter++;
+          std::cout << counter << ':' << exitPosX << ',' << exitPosY
                     << std::endl;
           std::cout << "successfully escaped!!" << std::endl;
 
@@ -82,7 +85,8 @@ public:
 private:
   int counter = 0;
   bool (&maze)[17][17];
-  bool getNextPath(int dir, int &x, int &y) { // change x,y depend on var "dir";
+  bool getNextPath(int dir, int &x,
+                   int &y) const { // change x,y depend on var "dir"
     switch (dir) {
     case 0:
       y++;
@@ -102,7 +106,8 @@ private:
   }
 
   void printStruct(item tmp) {
-    std::cout << counter++ << ':' << tmp.x << ',' << tmp.y << std::endl;
+    std::cout << counter << ':' << tmp.x << ',' << tmp.y << std::endl;
+    counter++;
   }
 };
 class FileIO {
@@ -123,7 +128,7 @@ public:
       } catch (const std::length_error &e) {
         std::cerr << e.what() << std::endl;
       }
-      printMaze(maze);
+      printMaze();
     } else {
       std::cerr << "can't open file name : " << fileName << std::endl;
       fileBuffer
@@ -156,7 +161,7 @@ public:
       row++;
     }
   }
-  void printMaze(bool (&maze)[17][17]) {
+  void printMaze() {
     for (int i = 0; i < 17; i++) {
       for (int j = 0; j < 17; j++) {
         std::cout << maze[i][j];
@@ -174,7 +179,10 @@ int main() {
   mazeFile.openAndConvert(); // open the file and try to convert it to 2d array
                              // of bool
   while (!std::cin.eof()) {
-    int startPosX, startPosY, exitPosX, exitPosY;
+    int startPosX;
+    int startPosY;
+    int exitPosX;
+    int exitPosY;
     std::cout << "enter start position : ";
     std::cin >> startPosX >> startPosY;
     if (startPosX == -1 &&

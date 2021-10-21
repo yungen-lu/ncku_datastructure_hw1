@@ -1,5 +1,7 @@
+#include <array>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <stack>
 #include <stdexcept>
 #include <string>
@@ -14,19 +16,19 @@ struct item {
 };
 class Solution {
 public:
-  explicit Solution(bool (&maze)[17][17])
+  explicit Solution(std::array<std::array<bool, 17>, 17> &maze)
       : maze(maze) {} // pass in a 2d array to initialize
 
   void sol(int startPosX, int startPosY, int exitPosX, int exitPosY) {
-    bool mark[17][17] = {
-        {false}}; // create a 17x17 bool array and initialize
-                  // as false at all position
-                  // this indicates wheather the rat have been there or not
+    std::array<std::array<bool, 17>, 17> mark = {{false}};
+    // create a 17x17 bool array and initialize
+    // as false at all position
+    // this indicates wheather the rat have been there or not
     counter = 0;
     std::stack<item> stackOfItem;     // create a stack of struct item
     item first(startPosX, startPosY); // create a struct item with x,y position
     stackOfItem.push(first);
-    mark[startPosX][startPosY] =
+    mark.at(startPosX).at(startPosY) =
         true; // mark start position as true on the mark 2d array
     while (!stackOfItem.empty()) {
       item top = stackOfItem.top();
@@ -54,11 +56,12 @@ public:
 
           return;
         }
-        if (!maze[nextX][nextY] &&
-            !mark[nextX][nextY]) { // if the maze have no wall on nextX,nextY
-                                   // position and the rat have not been
-                                   // there(mark array is false)
-          mark[nextX][nextY] = true;
+        if (!maze.at(nextX).at(nextY) &&
+            !mark.at(nextX).at(
+                nextY)) { // if the maze have no wall on nextX,nextY
+                          // position and the rat have not been
+                          // there(mark array is false)
+          mark.at(nextX).at(nextY) = true;
           top.x = currentX;
           top.y = currentY;
           top.dir =
@@ -84,7 +87,8 @@ public:
 
 private:
   int counter = 0;
-  bool (&maze)[17][17];
+  // bool (&maze)[17][17];
+  std::array<std::array<bool, 17>, 17> maze;
   bool getNextPath(int dir, int &x,
                    int &y) const { // change x,y depend on var "dir"
     switch (dir) {
@@ -113,8 +117,9 @@ private:
 class FileIO {
 public:
   FileIO() { getFileName(); } // try to get the filename at initialize
-  bool maze[17][17] = {
-      {false}}; // create a 17x17 array and initialize as false at all position
+  // bool maze[17][17] = {
+  //  {false}}; // create a 17x17 array and initialize as false at all position
+  std::array<std::array<bool, 17>, 17> maze = {{false}};
 
   void openAndConvert() {
     fileBuffer.open(fileName);
@@ -158,9 +163,11 @@ private:
                                                    // length is larger than 17
       }
       for (size_t i = 0; i < stringBuffer.size(); i++) {
-        if (stringBuffer[i] == '1') { // if the char at position i in the line
-                                      // is '1' then change maze[row][i] to true
-          maze[row][i] = true;
+        if (stringBuffer.at(i) ==
+            '1') { // if the char at position i in the line
+                   // is '1' then change maze[row][i] to true
+          // maze[row][i] = true;
+          maze.at(row).at(i) = true;
         }
       }
       row++;
@@ -169,7 +176,7 @@ private:
   void printMaze() const {
     for (int i = 0; i < 17; i++) {
       for (int j = 0; j < 17; j++) {
-        std::cout << maze[i][j];
+        std::cout << maze.at(i).at(j);
       }
       std::cout << std::endl;
     }
@@ -188,27 +195,40 @@ int main() {
     int exitPosY;
     std::cout << "enter start position : ";
     std::cin >> startPosX >> startPosY;
+    if (std::cin.fail()) {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr << "enter invalid" << std::endl;
+      continue;
+    }
     if (startPosX == -1 &&
         startPosY == -1) { // quit program when entered "-1 -1"
       std::cout << "end the code." << std::endl;
       break;
     }
-    if (mazeFile.maze[startPosX]
-                     [startPosY]) { // check the entered position is valid or
-                                    // not e.g can not start from a wall
+    if (mazeFile.maze.at(startPosX).at(
+            startPosY)) { // check the entered position is valid or
+                          // not e.g can not start from a wall
       std::cerr << "unvalid position" << std::endl;
       continue;
     }
     std::cout << "enter exit position : ";
     std::cin >> exitPosX >> exitPosY;
+    if (std::cin.fail()) {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr << "enter invalid" << std::endl;
+      continue;
+    }
+
     if (startPosX == -1 &&
         startPosY == -1) { // quit program when entered "-1 -1"
       std::cout << "end the code." << std::endl;
       break;
     }
-    if (mazeFile
-            .maze[exitPosX][exitPosY]) { // check the entered position is valid
-                                         // or not e.g can not end at a wall
+    if (mazeFile.maze.at(exitPosX).at(
+            exitPosY)) { // check the entered position is valid
+                         // or not e.g can not end at a wall
       std::cerr << "unvalid position" << std::endl;
       continue;
     }

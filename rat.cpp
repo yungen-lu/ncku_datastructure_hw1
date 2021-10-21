@@ -79,8 +79,10 @@ class Solution {
     return;
   }
 
-  int counter = 0;
   std::array<std::array<bool, 17>, 17> maze;
+
+ private:
+  int counter = 0;
   /**
    * change the position according var dir
    * @param dir the direction of the next path
@@ -118,6 +120,8 @@ class Solution {
 };
 class FileIO {
  public:
+  std::string fileName;
+  std::ifstream fileBuffer;
   FileIO() { getFileName(); }  // try to get the filename at initialize
   // create a 17x17 array and initialize as false at all position
   std::array<std::array<bool, 17>, 17> maze = {{false}};
@@ -133,7 +137,6 @@ class FileIO {
       } catch (const std::length_error &e) {
         std::cerr << e.what() << std::endl;
       }
-      printMaze();
     } else {
       std::cerr << "can't open file name : " << fileName << std::endl;
       fileBuffer.close();  // if can not open file get a new filename and try again
@@ -142,7 +145,19 @@ class FileIO {
     }
     fileBuffer.close();
   }
+  /**
+   * print the 17x17 maze
+   */
+  void printMaze() const {
+    for (int i = 0; i < 17; i++) {
+      for (int j = 0; j < 17; j++) {
+        std::cout << maze.at(i).at(j);
+      }
+      std::cout << std::endl;
+    }
+  }
 
+ private:
   /**
    * tries to get the file name
    * @throws throw an exception when user enter EOF
@@ -180,24 +195,12 @@ class FileIO {
       row++;
     }
   }
-  /**
-   * print the 17x17 maze
-   */
-  void printMaze() const {
-    for (int i = 0; i < 17; i++) {
-      for (int j = 0; j < 17; j++) {
-        std::cout << maze.at(i).at(j);
-      }
-      std::cout << std::endl;
-    }
-  }
-  std::string fileName;
-  std::ifstream fileBuffer;
 };
 int main() {
   FileIO mazeFile;
   mazeFile.openAndConvert();  // open the file and try to convert it to 2d array
                               // of bool
+  mazeFile.printMaze();
   while (!std::cin.eof()) {
     int startPosX;
     int startPosY;

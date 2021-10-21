@@ -217,8 +217,7 @@ int main() {
       continue;
     }
 
-    if (startPosX == -1 &&
-        startPosY == -1) { // quit program when entered "-1 -1"
+    if (exitPosX == -1 && exitPosY == -1) { // quit program when entered "-1 -1"
       std::cout << "end the code." << std::endl;
       break;
     }

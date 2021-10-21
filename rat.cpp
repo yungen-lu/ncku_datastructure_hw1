@@ -80,7 +80,7 @@ public:
   }
 
 private:
-  int counter;
+  int counter = 0;
   bool (&maze)[17][17];
   bool getNextPath(int dir, int &x, int &y) { // change x,y depend on var "dir";
     switch (dir) {
@@ -141,13 +141,11 @@ public:
         throw std::length_error(
             "row length is larger than 17"); // throw error when row is larger
                                              // than 17
-        break;
       }
       if (stringBuffer.size() > 17) {
         throw std::length_error(
             "line length is larger than 17 char"); // throw error when line
                                                    // length is larger than 17
-        continue;
       }
       for (size_t i = 0; i < stringBuffer.size(); i++) {
         if (stringBuffer[i] == '1') { // if the char at position i in the line

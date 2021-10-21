@@ -13,11 +13,11 @@
 
 在 terminal 中使用g++
 
-![截圖 2021-10-21 下午12.58.40](./截圖 2021-10-21 下午12.58.40.png)
+![截圖 2021-10-21 下午12.58.40](asset/screenshot1.png)
 
 編譯 argument 為 g++-11 -O2 -Wall -Wextra -std=gnu++17 -pedantic rat.cpp -o rat
 
-![截圖 2021-10-21 下午1.10.19](./截圖 2021-10-21 下午1.10.19.png)
+![截圖 2021-10-21 下午1.10.19](asset/screenshot2.png)
 
 
 

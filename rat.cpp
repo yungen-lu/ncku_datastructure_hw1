@@ -116,10 +116,6 @@ public:
   bool maze[17][17] = {
       {false}}; // create a 17x17 array and initialize as false at all position
 
-  void getFileName() {
-    std::cout << "enter filename : ";
-    std::cin >> fileName;
-  }
   void openAndConvert() {
     fileBuffer.open(fileName);
     if (fileBuffer.is_open()) {
@@ -137,6 +133,15 @@ public:
       openAndConvert();
     }
     fileBuffer.close();
+  }
+
+private:
+  void getFileName() {
+    std::cout << "enter filename : ";
+    std::cin >> fileName;
+    if (std::cin.eof()) {
+      throw std::invalid_argument("EOF entered");
+    }
   }
   void convertStringToBool() {
     std::string stringBuffer;
@@ -161,7 +166,7 @@ public:
       row++;
     }
   }
-  void printMaze() {
+  void printMaze() const {
     for (int i = 0; i < 17; i++) {
       for (int j = 0; j < 17; j++) {
         std::cout << maze[i][j];
@@ -169,8 +174,6 @@ public:
       std::cout << std::endl;
     }
   }
-
-private:
   std::string fileName;
   std::ifstream fileBuffer;
 };

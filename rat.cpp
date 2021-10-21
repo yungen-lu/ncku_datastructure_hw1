@@ -15,46 +15,47 @@ class Solution {
 public:
   Solution(bool (&maze)[17][17]) : maze(maze) {}
 
-  bool sol(int startPosX, int startPosY, int exitPosX, int exitPosY) {
+  void sol(int startPosX, int startPosY, int exitPosX, int exitPosY) {
     bool mark[17][17] = {{false}};
-    this->counter = 0;
-    std::stack<item> stack;
+    counter = 0;
+    std::stack<item> stackOfItem;
     item first(startPosX, startPosY);
-    stack.push(first);
+    stackOfItem.push(first);
     mark[startPosX][startPosY] = 1;
-    while (!stack.empty()) {
-      item top = stack.top();
-      stack.pop();
-      int i = top.x, j = top.y, d = top.dir;
+    while (!stackOfItem.empty()) {
+      item top = stackOfItem.top();
+      stackOfItem.pop();
+      int currentX = top.x, currentY = top.y, d = top.dir;
       while (d < 4) {
-        int nextX = i;
-        int nextY = j;
+        int nextX = currentX;
+        int nextY = currentY;
         getNextPath(d, nextX, nextY);
         if (nextX == exitPosX && nextY == exitPosY) {
-          std::cout << counter++ << ':' << i << ',' << j << std::endl;
+          std::cout << counter++ << ':' << currentX << ',' << currentY
+                    << std::endl;
           std::cout << counter++ << ':' << nextX << ',' << nextY << std::endl;
           std::cout << "successfully escaped!!" << std::endl;
 
-          return true;
+          return;
         }
         if (!maze[nextX][nextY] && !mark[nextX][nextY]) {
           mark[nextX][nextY] = true;
-          top.x = i;
-          top.y = j;
+          top.x = currentX;
+          top.y = currentY;
           top.dir = d + 1;
-          stack.push(top);
-          i = nextX;
-          j = nextY;
+          stackOfItem.push(top);
+          currentX = nextX;
+          currentY = nextY;
           d = 0;
-          print(top);
+          printStruct(top);
         } else {
           d++;
         }
       }
-      print(top);
+      printStruct(top);
     }
     std::cout << "Failed to escape." << std::endl;
-    return false;
+    return;
   }
 
 private:
@@ -79,7 +80,7 @@ private:
     }
   }
 
-  void print(item tmp) {
+  void printStruct(item tmp) {
     std::cout << counter++ << ':' << tmp.x << ',' << tmp.y << std::endl;
   }
 };
@@ -95,7 +96,7 @@ public:
     fileBuffer.open(fileName);
     if (fileBuffer.is_open()) {
       try {
-        convertStringToInt();
+        convertStringToBool();
       } catch (const std::length_error &e) {
         std::cout << e.what() << std::endl;
       }
@@ -107,16 +108,16 @@ public:
     }
     fileBuffer.close();
   }
-  void convertStringToInt() {
-    std::string buffer;
+  void convertStringToBool() {
+    std::string stringBuffer;
     int x = 0;
-    while (std::getline(fileBuffer, buffer)) {
-      if (buffer.size() > 17) {
+    while (std::getline(fileBuffer, stringBuffer)) {
+      if (stringBuffer.size() > 17) {
         throw std::length_error("line length is larger than 17 char");
         continue;
       }
-      for (size_t i = 0; i < buffer.size(); i++) {
-        if (buffer[i] == '1') {
+      for (size_t i = 0; i < stringBuffer.size(); i++) {
+        if (stringBuffer[i] == '1') {
           maze[x][i] = true;
         }
       }
@@ -137,8 +138,8 @@ private:
   std::ifstream fileBuffer;
 };
 int main() {
-  FileIO test;
-  test.openAndConvert();
+  FileIO mazeFile;
+  mazeFile.openAndConvert();
   while (true) {
     int startPosX, startPosY, exitPosX, exitPosY;
     std::cout << "enter start position : ";
@@ -147,7 +148,7 @@ int main() {
       std::cout << "end the code." << std::endl;
       return 0;
     }
-    if (test.maze[startPosX][startPosY]) {
+    if (mazeFile.maze[startPosX][startPosY]) {
       std::cerr << "unvalid position" << std::endl;
       continue;
     }
@@ -157,11 +158,11 @@ int main() {
       std::cout << "end the code." << std::endl;
       return 0;
     }
-    if (test.maze[exitPosX][exitPosY]) {
+    if (mazeFile.maze[exitPosX][exitPosY]) {
       std::cerr << "unvalid position" << std::endl;
       continue;
     }
-    Solution sol(test.maze);
+    Solution sol(mazeFile.maze);
     sol.sol(startPosX, startPosY, exitPosX, exitPosY);
   }
   return 0;

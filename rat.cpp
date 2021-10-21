@@ -194,7 +194,7 @@ int main() {
     if (std::cin.fail()) {
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      std::cerr << "enter invalid" << std::endl;
+      std::cerr << "entered invalid" << std::endl;
       continue;
     }
     if (startPosX == -1 &&
@@ -202,7 +202,8 @@ int main() {
       std::cout << "end the code." << std::endl;
       break;
     }
-    if (mazeFile.maze.at(startPosX).at(
+    std::array<std::array<bool, 17>, 17> &maze = mazeFile.maze;
+    if (maze.at(startPosX).at(
             startPosY)) { // check the entered position is valid or
                           // not e.g can not start from a wall
       std::cerr << "unvalid position" << std::endl;
@@ -213,7 +214,7 @@ int main() {
     if (std::cin.fail()) {
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      std::cerr << "enter invalid" << std::endl;
+      std::cerr << "entered invalid" << std::endl;
       continue;
     }
 
@@ -221,13 +222,12 @@ int main() {
       std::cout << "end the code." << std::endl;
       break;
     }
-    if (mazeFile.maze.at(exitPosX).at(
-            exitPosY)) { // check the entered position is valid
-                         // or not e.g can not end at a wall
+    if (maze.at(exitPosX).at(exitPosY)) { // check the entered position is valid
+                                          // or not e.g can not end at a wall
       std::cerr << "unvalid position" << std::endl;
       continue;
     }
-    Solution sol(mazeFile.maze); // pass in the maze to solution object
+    Solution sol(maze); // pass in the maze to solution object
     sol.sol(startPosX, startPosY, exitPosX,
             exitPosY); // try the entered positions
   }

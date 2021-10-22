@@ -14,8 +14,9 @@ struct item {
 };
 class Solution {
  public:
-  std::array<std::array<bool, 17>, 17> maze;
-  explicit Solution(std::array<std::array<bool, 17>, 17> &maze) : maze(maze) {}  // pass in a 2d array to initialize
+  const std::array<std::array<bool, 17>, 17> &maze;
+  explicit Solution(const std::array<std::array<bool, 17>, 17> &maze)
+      : maze(maze) {}  // pass in a 2d array to initialize
 
   /**
    * this function is the main algo that will try all path in the maze
@@ -24,12 +25,12 @@ class Solution {
    * @param exitPosX the ending position x
    * @param exitPosY the ending position y
    */
-  void sol(int startPosX, int startPosY, int exitPosX, int exitPosY) {
+  void sol(const int startPosX, const int startPosY, const int exitPosX, const int exitPosY) {
     std::array<std::array<bool, 17>, 17> mark = {{false}};
     // create a 17x17 bool array and initialize
     // as false at all position
     // this 2d array `mark` indicates wheather the rat have been there or not
-    counter = 0;                       // counter that counts the step of the rat
+    counter = 0;                       // reset counter to 0
     std::stack<item> stackOfItem;      // create a stack of struct `item`
     item first(startPosX, startPosY);  // create a struct item with the starting x,y position
     stackOfItem.push(first);
@@ -86,14 +87,14 @@ class Solution {
   }
 
  private:
-  int counter = 0;
+  unsigned int counter = 0;  // counter that counts the step of the rat
   /**
    * change the position according var dir
    * @param dir the direction of the next path
    * @param x the position x that will be changed to the next position
    * @param y the position y that will be changed to the next position
    */
-  void getNextPath(int dir, int &x,
+  void getNextPath(const int dir, int &x,
                    int &y) const {  // change x,y depend on var "dir"
     switch (dir) {
       case 0:
@@ -117,7 +118,7 @@ class Solution {
    * print out the struct item whith the format of "counter:x,y\n"
    * @param tmp the struct item that will be printed out
    */
-  void printStruct(item tmp) {
+  void printStruct(const item &tmp) {
     std::cout << counter << ':' << tmp.x << ',' << tmp.y << std::endl;
     counter++;
   }

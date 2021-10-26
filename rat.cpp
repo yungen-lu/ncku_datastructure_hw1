@@ -129,7 +129,8 @@ class FileIO {
   std::ifstream fileBuffer;
   FileIO() { getFileName(); }  // try to get the filename at initialization
   // create a 17x17 array and initialize as false at all position
-  std::array<std::array<bool, 17>, 17> maze = {{{false}}};
+  std::array<std::array<bool, 17>, 17> maze = {
+      {{}}};  // initializing with {{{false}}} seems to cause errors in Dev C++ IDE
 
   /**
    * tries to open the file with the filename that was been retrieved when initializing the class object

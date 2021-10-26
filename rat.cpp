@@ -26,7 +26,7 @@ class Solution {
    * @param exitPosY the ending position y
    */
   void sol(const int startPosX, const int startPosY, const int exitPosX, const int exitPosY) {
-    std::array<std::array<bool, 17>, 17> mark = {{false}};
+    std::array<std::array<bool, 17>, 17> mark = {{{false}}};
     // create a 17x17 bool array and initialize
     // as false at all position
     // this 2d array `mark` indicates wheather the rat have been there or not
@@ -129,7 +129,7 @@ class FileIO {
   std::ifstream fileBuffer;
   FileIO() { getFileName(); }  // try to get the filename at initialization
   // create a 17x17 array and initialize as false at all position
-  std::array<std::array<bool, 17>, 17> maze = {{false}};
+  std::array<std::array<bool, 17>, 17> maze = {{{false}}};
 
   /**
    * tries to open the file with the filename that was been retrieved when initializing the class object

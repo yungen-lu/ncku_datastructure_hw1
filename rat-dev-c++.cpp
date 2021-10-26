@@ -126,7 +126,7 @@ class FileIO {
   // std::string fileName;
   char fileName[256];
   std::ifstream fileBuffer;
-  bool maze[17][17];           // initializing with {{{false}}} seems to cause errors in Dev C++ IDE
+  bool maze[17][17];
   FileIO() { getFileName(); }  // try to get the filename at initialization
   // create a 17x17 array and initialize as false at all position
 
@@ -140,6 +140,8 @@ class FileIO {
         convertStringToBool();  // convert the txt file to a 2d array of bool
       } catch (const std::length_error &e) {
         std::cerr << e.what() << std::endl;  // if there was exceptions during the process output it to std error;
+      } catch (const std::invalid_argument &e) {
+        std::cerr << e.what() << std::endl;
       }
     } else {
       std::cerr << "can't open file name : " << fileName << std::endl;
@@ -177,6 +179,7 @@ class FileIO {
    * convert the file to 2d array line by line
    * @throws  when the line is more than 17 char, throw an exception
    * @throws when there more than 17 lines, throw an exception
+   * @throws when the maze file contains invalid char
    */
   void convertStringToBool() {
     std::string stringBuffer;
@@ -194,8 +197,10 @@ class FileIO {
         if (stringBuffer.at(i) == '1') {  // if the char at position i in the line
                                           // is '1' then change maze[row][i] to true
           maze[row][i] = true;
-        } else {
+        } else if (stringBuffer.at(i) == '0') {
           maze[row][i] = false;
+        } else {
+          throw std::invalid_argument("the maze file has some problems");  // throw error when there are not '1' or '0'
         }
       }
       row++;

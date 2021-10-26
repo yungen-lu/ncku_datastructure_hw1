@@ -194,6 +194,8 @@ class FileIO {
         if (stringBuffer.at(i) == '1') {  // if the char at position i in the line
                                           // is '1' then change maze[row][i] to true
           maze[row][i] = true;
+        } else {
+          maze[row][i] = false;
         }
       }
       row++;

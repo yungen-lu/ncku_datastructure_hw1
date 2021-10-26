@@ -80,7 +80,7 @@ class Solution {
       printStruct(top);  // print path when the rat is moving backwards(from it's
                          // last path)
     }
-    std::cout << "Failed to escape." << std::endl;
+    std::cout << "Failed to escape." << std::endl;  // when the stack is empty indicates that there is no path to try
     return;
   }
 
